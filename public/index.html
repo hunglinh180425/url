@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rút gọn liên kết đơn giản - Hung Pro VN</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.freepik.com/256/6994/6994770.png?semt=ais_hybrid/">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url('https://picsum.photos/1920/1080/?random') no-repeat center center/cover;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input[type="text"]:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+        }
+
+        button {
+            width: 90%;
+            padding: 12px;
+            font-size: 16px;
+            background: linear-gradient(135deg, #00d4ff, #007bff);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            display: none;
+            width: 90%;
+        }
+
+        .output a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .output a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rút gọn liên kết</h1>
+        <p>Website rút gọn liên kết đơn giản cho mọi người.</p>
+        <form id="shortenForm">
+            <input type="text" name="longUrl" placeholder="Nhập URL bạn muốn rút gọn..." required>
+            <input type="text" name="customAlias" placeholder="Nhập bí danh tùy chỉnh (tùy chọn)">
+            <button type="submit">Shorten URL</button>
+         <!--   <div>
+                <strong>Made by FMODE Team</strong>
+                <a href="https://github.com/jOaawd/URL-Shortener">Open-Sauce</a>
+
+            </div> -->
+        </form>
+        <div class="output" id="output">
+            <p><strong>Your shortened URL:</strong></p>
+            <a href="#" target="_blank" id="shortUrl">Click here</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.querySelector('#shortenForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const longUrl = document.querySelector('input[name="longUrl"]').value;
+            const customAlias = document.querySelector('input[name="customAlias"]').value;
+
+            const data = {
+                longUrl: longUrl,
+                customAlias: customAlias
+            };
+
+            fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data)
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('output').style.display = 'block';
+                document.getElementById('shortUrl').href = data.match(/href="([^"]+)"/)[1];
+                document.getElementById('shortUrl').textContent = data.match(/href="([^"]+)"/)[1];
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        });
+    </script>
+</body>
+</html>
